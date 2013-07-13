@@ -49,6 +49,8 @@ public:
     }
     variant( const char *str ) : string(new string_t(str ? str : "")), type(IS_STRING) {
     }
+    variant( char * const &str ) : string(new string_t(str ? str : "")), type(IS_STRING) {
+    }
     variant( const string_t &t ) : string(new string_t(t)), type(IS_STRING) {
     }
     variant( const string_alt &t ) : string(new string_t(t.begin(), t.end())), type(IS_STRING) {
