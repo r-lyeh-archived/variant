@@ -30,7 +30,7 @@
 #include <sstream>
 #include <string>
 
-template<typename number_t, typename string_t = std::string, typename string_alt = std::wstring >
+template< typename number_t, typename string_t = std::string, typename string_alt = std::wstring >
 class variant {
 
 public:
@@ -202,6 +202,8 @@ public:
     const bool operator OPER( const variant &t ) const { \
         number_t n; \
         auto &use = ( this->type == IS_STRING ? *this : t ); \
+        if( this->type == IS_NUMBER && t.type == IS_NUMBER ) \
+            return (*this->number) OPER (*t.number); \
         if( this->type - t.type == 0 || use.downcast(n) ) \
             return str() OPER t.str(); \
         return ELSE; \
@@ -347,6 +349,40 @@ public:
             number_t diff = variant(1.00000).num() - 1;
             TEST3( diff * diff, <, 1e-6 ); // test close enough
         }
+
+        //{
+            auto NaN = std::numeric_limits<double>::quiet_NaN();
+            MISS3( NaN, <=, NaN );
+            MISS3( NaN, >=, NaN );
+            MISS3( NaN, < , NaN );
+            MISS3( NaN, > , NaN );
+            MISS3( NaN, ==, NaN );
+            TEST3( NaN, !=, NaN );
+
+            variant nan( NaN );
+            MISS3( nan, <=, NaN );
+            MISS3( nan, >=, NaN );
+            MISS3( nan, < , NaN );
+            MISS3( nan, > , NaN );
+            MISS3( nan, ==, NaN );
+            TEST3( nan, !=, NaN );
+
+            MISS3( nan, <=, nan );
+            MISS3( nan, >=, nan );
+            MISS3( nan, < , nan );
+            MISS3( nan, > , nan );
+            MISS3( nan, ==, nan );
+            TEST3( nan, !=, nan );
+
+            TEST3( nan.str(), ==, (nan + 0).str() );
+            TEST3( nan.str(), ==, (nan - 0).str() );
+            TEST3( nan.str(), ==, (nan * 0).str() );
+            TEST3( nan.str(), ==, (nan / 0).str() );
+
+            TEST3( nan.num(), !=, 0 );
+            TEST3( nan.num(), !=, nan.num() );
+            TEST3( nan, !=, nan );
+        //}
 
         TEST3( variant(10), ==, 10 );
         TEST3( variant(10), ==, "10" );
