@@ -1,5 +1,5 @@
 // variant, a type class that mimics javascript varying behaviours as much as possible.
-// - rlyeh, 2013. MIT licensed ~~ listening to Howlin' Rain - Phantom In The Valley.
+// - rlyeh, 2013. BOOST licensed ~~ listening to Howlin' Rain - Phantom In The Valley.
 
 /* notes to self:
  * uint8  can safely store (u)int8
